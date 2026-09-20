@@ -8,3 +8,4 @@ Collection of Claude skills I use
 5. homelab-architecture-diagram-2.skill: visualizes your homelab architecture and services. Paste your hardware and services inventory and ask for a diagram. The skill asks for anything missing, then builds the HTML. Can also generate a homelab_state.md so Claude has context on your hardware and services.
 6. SETUP-GUIDE-plaud-notion.md: Instructions for Hermes Agent to replicate my Plaud to Notion meeting notes automation workflow.
 7. sharex-selfhost-GUIDE.md: A build guide for a Claude Code session (or any LLM harness) to set up a Gyazo-like screen capture workflow using ShareX and n8n
+8. meeting-report-template.EXAMPLE.html: sample template for my transcript report
