@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meeting Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F7F8; --surface:#FFFFFF; --surface-2:#FAFBFC; --inset:#F2F4F6;
+  --ink:#1B2229; --ink-2:#4C5763; --ink-3:#7B8593;
+  --rule:#DEE3E8; --rule-2:#EBEEF1;
+  --accent:#1D6A6E; --accent-2:#2E8387; --accent-soft:#EAF2F2;
+  --warn:#8A6520; --warn-bg:#FAF4E8; --warn-rule:#E4D5B4;
+  --alert:#9A2E24; --alert-bg:#FBEEEC; --alert-rule:#E9C7C1;
+  --ok:#1D6340; --ok-bg:#E9F3EE; --ok-rule:#BFDACB;
+  --shadow:0 1px 2px rgba(20,30,40,.05);
+  --ui:'Inter',ui-sans-serif,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --serif:'Source Serif 4',Georgia,'Times New Roman',serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --s0:#1D6A6E; --s1:#8A5A9E; --s2:#8A6520; --s3:#2E6B9E; --s4:#9A2E24; --s5:#1D6340;
+}
+[data-theme="dark"]{
+  --bg:#10151A; --surface:#181E25; --surface-2:#1D242C; --inset:#141A20;
+  --ink:#E7ECF1; --ink-2:#AFB9C4; --ink-3:#7C8794;
+  --rule:#2A323B; --rule-2:#222932;
+  --accent:#5FB0B3; --accent-2:#7CC5C7; --accent-soft:#17282A;
+  --warn:#D3B071; --warn-bg:#241F14; --warn-rule:#453A22;
+  --alert:#E28A80; --alert-bg:#271A18; --alert-rule:#4A2E29;
+  --ok:#6FBF95; --ok-bg:#152621; --ok-rule:#2C4638;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+  --s0:#5FB0B3; --s1:#C79BDB; --s2:#D3B071; --s3:#7FB2E0; --s4:#E28A80; --s5:#6FBF95;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;transition:background .18s,color .18s}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 88px}
+
+/* header */
+.mast{padding:30px 0 22px}
+.mast-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.mast-acts{display:flex;gap:8px;flex:none}
+.theme{display:inline-flex;align-items:center;gap:7px;font-family:var(--ui);font-size:12.5px;font-weight:500;
+  color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:7px 12px;
+  cursor:pointer;transition:.15s;flex:none;margin-top:4px}
+.theme:hover{border-color:var(--accent);color:var(--accent)}
+h1{font-size:clamp(25px,3.6vw,33px);font-weight:600;letter-spacing:-.018em;line-height:1.2;margin:0}
+h1 .h1-sub{display:block;font-size:.66em;font-weight:400;color:var(--ink-2);letter-spacing:-.008em;margin-top:5px}
+.sub{font-size:13.5px;color:var(--ink-3);margin:12px 0 16px;max-width:80ch}
+.idbar{display:flex;flex-wrap:wrap;margin:0;border:1px solid var(--rule);border-radius:5px;background:var(--surface);overflow:hidden}
+.idbar div{display:flex;align-items:baseline;gap:8px;padding:7px 14px;border-right:1px solid var(--rule-2)}
+.idbar div:last-child{border-right:none}
+.idbar dt{margin:0;font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.idbar dd{margin:0;font-family:var(--mono);font-size:12.5px;font-weight:500;color:var(--ink)}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0}
+.tag{font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:3px;padding:2px 8px}
+
+/* sections */
+details.major{background:var(--surface);border:1px solid var(--rule);border-radius:6px;margin:0 0 16px;box-shadow:var(--shadow);overflow:hidden}
+details.major[hidden]{display:none}
+details.major>summary{list-style:none;cursor:pointer;padding:16px 22px;display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;background:var(--surface);z-index:20;border-bottom:1px solid transparent;transition:background .15s}
+details.major>summary:hover{background:var(--surface-2)}
+details.major[open]>summary{border-bottom:1px solid var(--rule)}
+details.major>summary::-webkit-details-marker{display:none}
+.sec-n{font-family:var(--mono);font-size:11px;font-weight:500;color:var(--accent);background:var(--accent-soft);border-radius:3px;padding:3px 7px;flex:none}
+.sec-t{font-size:17px;font-weight:600;letter-spacing:-.01em;margin:0;flex:1}
+.sec-meta{font-size:12px;color:var(--ink-3)}
+.caret{font-size:11px;color:var(--ink-3);transition:transform .18s;flex:none}
+details.major[open] .caret{transform:rotate(90deg)}
+.sec-body{padding:26px 22px 30px}
+h3{font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);margin:32px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--rule)}
+h3:first-child{margin-top:0}
+.lede{font-size:15.5px;line-height:1.68;color:var(--ink-2);max-width:78ch;margin:0 0 14px;font-family:var(--serif)}
+.small{font-size:13px;color:var(--ink-3);max-width:76ch;line-height:1.6}
+.empty{font-size:13px;color:var(--ink-3);padding:6px 0;font-style:italic}
+.note{max-width:78ch;font-size:13.5px;line-height:1.62;color:var(--ink-2);background:var(--warn-bg);border:1px solid var(--warn-rule);border-radius:5px;padding:12px 15px;margin:14px 0}
+.note b{color:var(--warn);font-weight:600}
+
+/* takeaways / bullets */
+.bl{margin:0;padding:0;list-style:none}
+.bl li{position:relative;padding:8px 0 8px 22px;border-bottom:1px solid var(--rule-2);color:var(--ink-2);font-size:14.5px;line-height:1.6}
+.bl li:last-child{border-bottom:none}
+.bl li::before{content:"";position:absolute;left:4px;top:17px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+/* timestamps + speakers */
+.ts{font-family:var(--mono);font-size:11px;color:var(--accent);background:var(--accent-soft);border-radius:3px;padding:1px 6px;
+  text-decoration:none;white-space:nowrap;cursor:pointer;margin-left:6px}
+.ts:hover{background:var(--accent);color:#fff}
+[data-theme="dark"] .ts:hover{color:#0F1519}
+.spk{font-family:var(--mono);font-size:11.5px;font-weight:500;white-space:nowrap}
+.spk::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:currentColor;vertical-align:1px}
+
+/* decisions */
+.dec{display:grid;grid-template-columns:28px 1fr;gap:0 14px;padding:13px 0;border-bottom:1px solid var(--rule-2)}
+.dec:last-child{border-bottom:none}
+.dec-n{font-family:var(--mono);font-size:12px;color:var(--ink-3);text-align:right;padding-top:2px}
+.dec-t{font-size:15px;font-weight:600;line-height:1.45;margin:0 0 4px;color:var(--ink)}
+.dec-r{margin:0;font-size:13.5px;color:var(--ink-2);line-height:1.6;max-width:80ch}
+.dec-m{margin:6px 0 0;font-size:12px;color:var(--ink-3);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:13.5px;border:1px solid var(--rule);border-radius:5px}
+.tbl th{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:9px 14px;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--rule-2);vertical-align:top;color:var(--ink-2)}
+.tbl td:first-child{color:var(--ink);font-weight:500}
+.tbl tr:last-child td{border-bottom:none}
+.mono{font-family:var(--mono);font-size:12.5px}
+.badge{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.07em;border-radius:3px;padding:3px 8px;border:1px solid transparent}
+.badge-ok{color:var(--ok);background:var(--ok-bg);border-color:var(--ok-rule)}
+.badge-mid{color:var(--warn);background:var(--warn-bg);border-color:var(--warn-rule)}
+.badge-hi{color:var(--alert);background:var(--alert-bg);border-color:var(--alert-rule)}
+.badge-dim{color:var(--ink-3);background:var(--inset);border-color:var(--rule)}
+
+/* chapters */
+.ch{padding:18px 0;border-bottom:1px solid var(--rule-2)}
+.ch:last-child{border-bottom:none}
+.ch-h{display:flex;align-items:baseline;gap:12px;margin:0 0 8px}
+.ch-t{font-size:15.5px;font-weight:600;color:var(--ink);margin:0;flex:1}
+.ch-range{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.ch-who{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 10px}
+.ch-out{margin:12px 0 0;padding:10px 14px;border-left:2px solid var(--accent);background:var(--surface-2);font-size:13.5px;color:var(--ink-2);border-radius:0 4px 4px 0}
+.ch-out b{color:var(--accent);font-weight:600;font-size:11px;letter-spacing:.07em;text-transform:uppercase;display:block;margin-bottom:3px}
+
+/* quotes */
+.qt{display:grid;grid-template-columns:1fr;gap:6px;padding:14px 0;border-bottom:1px solid var(--rule-2)}
+.qt:last-child{border-bottom:none}
+.qt-x{margin:0;padding:0 0 0 14px;border-left:2px solid var(--rule);font-family:var(--serif);font-size:15.5px;line-height:1.66;color:var(--ink-2);max-width:82ch;font-style:italic}
+.qt-m{font-size:12px;color:var(--ink-3);display:flex;gap:12px;align-items:center;padding-left:16px}
+
+/* open questions */
+.oq{padding:10px 0 10px 14px;border-left:2px solid var(--warn-rule);margin:0 0 10px;font-size:14px;color:var(--ink-2);line-height:1.6}
+.oq b{color:var(--warn);font-weight:600}
+
+/* transcript */
+details.payload{border:1px solid var(--rule);border-radius:5px;margin:0 0 20px;background:var(--surface-2);overflow:hidden}
+details.payload>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 14px;transition:background .14s}
+details.payload>summary::-webkit-details-marker{display:none}
+details.payload>summary:hover{background:var(--inset)}
+.pay-caret{font-size:9px;color:var(--ink-3);transition:transform .18s;flex:none}
+details.payload[open] .pay-caret{transform:rotate(90deg)}
+.pay-t{font-size:13px;font-weight:600;color:var(--ink);flex:1}
+.pay-meta{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.pay-body{padding:0 14px 14px}
+.code{border:1px solid var(--rule);border-radius:5px;overflow:hidden;margin:0;background:var(--surface)}
+.code-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;background:var(--surface);border-bottom:1px solid var(--rule)}
+.code-label{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.05em;color:var(--ink-3)}
+.copy{font-family:var(--ui);font-size:11.5px;font-weight:500;color:var(--ink-2);background:var(--surface);border:1px solid var(--rule);border-radius:4px;padding:3px 10px;cursor:pointer;transition:.14s}
+.copy:hover{border-color:var(--accent);color:var(--accent)}
+.copy.copied{color:var(--ok);border-color:var(--ok-rule)}
+.tr-body{max-height:640px;overflow:auto;padding:6px 0}
+.turn{display:grid;grid-template-columns:64px 130px 1fr;gap:0 12px;padding:9px 16px;border-bottom:1px solid var(--rule-2);align-items:start;scroll-margin-top:120px}
+.turn:last-child{border-bottom:none}
+.turn.hl{background:var(--accent-soft)}
+.turn-t{font-family:var(--mono);font-size:11px;color:var(--ink-3);padding-top:3px}
+.turn-x{margin:0;font-family:var(--serif);font-size:14.5px;line-height:1.62;color:var(--ink-2)}
+.code pre{display:none}
+
+@media (max-width:760px){
+  .wrap{padding:0 14px 64px}
+  .idbar div{border-right:none;border-bottom:1px solid var(--rule-2);flex:1 1 100%}
+  .idbar div:last-child{border-bottom:none}
+  details.major>summary{flex-wrap:wrap;padding:14px 16px;gap:10px}
+  .sec-t{flex:1 1 100%;order:3;font-size:16px}
+  .sec-n{order:1} .caret{order:2;margin-left:auto} .sec-meta{display:none}
+  .sec-body{padding:20px 16px 24px}
+  .tbl{display:block;overflow-x:auto;white-space:nowrap}
+  .turn{grid-template-columns:52px 1fr;gap:2px 10px}
+  .turn .spk{grid-column:2}
+  .turn-x{grid-column:1/3}
+}
+@media print{body{background:#fff} details.major>summary{position:static} .theme{display:none} details.major{border:none;box-shadow:none} .tr-body{max-height:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <div class="mast-top">
+    <h1 id="h-title">Meeting<span class="h1-sub" id="h-sub"></span></h1>
+    <div class="mast-acts">
+      <button class="theme" id="themeBtn" type="button" aria-pressed="false">
+        <span id="themeIcon" aria-hidden="true">☾</span><span id="themeTxt">Dark</span>
+      </button>
+    </div>
+  </div>
+  <p class="sub" id="h-lede"></p>
+  <dl class="idbar" id="idbar"></dl>
+  <div class="tags" id="tags"></div>
+</header>
+
+<main id="sections"></main>
+
+</div>
+
+<!-- ============================================================
+     DATA — pipeline.py replaces the JSON below with the merged
+     recording metadata + summary.json + transcript.json.
+     Everything above renders from this object; nothing else changes.
+     ============================================================ -->
+<script id="report-data" type="application/json">
+{
+ "meta": {
+  "plaud_id": "rec_00000000",
+  "title": "Example meeting — quarterly planning sync",
+  "start_at": "2026-01-15T10:02:00-08:00",
+  "duration_sec": 2340,
+  "source": "Desktop",
+  "recording_type": "meeting",
+  "audio_path": "recordings/2026-01-15_example_planning.mp3",
+  "pipeline": {
+   "asr": "whisperx large-v3",
+   "diarization": "pyannote community-1",
+   "summarizer": "your-local-llm",
+   "generated_at": "2026-01-15T10:45:00-08:00"
+  }
+ },
+ "speakers": {
+  "SPEAKER_00": {
+   "label": "SPEAKER_00",
+   "name": "Alex (inferred)",
+   "talk_sec": 1280
+  },
+  "SPEAKER_01": {
+   "label": "SPEAKER_01",
+   "name": null,
+   "talk_sec": 700
+  },
+  "SPEAKER_02": {
+   "label": "SPEAKER_02",
+   "name": null,
+   "talk_sec": 360
+  }
+ },
+ "summary": {
+  "tldr": "Sample content demonstrating the report layout. This working session covers a fictional product's quarterly plan: the team agreed to ship the reporting feature behind a flag, deferred the mobile rewrite, and set a follow-up review. Replace all example text with your pipeline's generated summary.",
+  "key_takeaways": [
+   "The reporting dashboard ships behind a feature flag at end of quarter.",
+   "The mobile rewrite is deferred until usage data justifies the effort.",
+   "Owner assignment is now tracked in the action-items section below.",
+   "A mid-quarter checkpoint review was scheduled rather than waiting for quarter end."
+  ]
+ },
+ "decisions": [
+  {
+   "text": "Ship the reporting dashboard behind a feature flag.",
+   "rationale": "Lets a small pilot group validate value before broad rollout.",
+   "by": "SPEAKER_00",
+   "agreed": [
+    "SPEAKER_01",
+    "SPEAKER_02"
+   ],
+   "t": 312
+  },
+  {
+   "text": "Defer the mobile rewrite to the following quarter.",
+   "rationale": "Current analytics show 12% mobile usage; effort is not justified yet.",
+   "by": "SPEAKER_01",
+   "agreed": [
+    "SPEAKER_00"
+   ],
+   "t": 940
+  },
+  {
+   "text": "Add a mid-quarter checkpoint review.",
+   "rationale": "Avoids the quarter-end surprise pattern from last cycle.",
+   "by": "SPEAKER_02",
+   "agreed": [
+    "SPEAKER_00",
+    "SPEAKER_01"
+   ],
+   "t": 1505
+  }
+ ],
+ "action_items": [
+  {
+   "task": "Draft the feature-flag rollout checklist for the pilot group.",
+   "owner": "SPEAKER_00",
+   "due": "2026-01-22",
+   "priority": "high",
+   "t": 1802
+  },
+  {
+   "task": "Pull the 90-day mobile usage breakdown for the rewrite decision.",
+   "owner": "SPEAKER_01",
+   "due": "2026-01-29",
+   "priority": "medium",
+   "t": 1830
+  },
+  {
+   "task": "Book the mid-quarter checkpoint for February.",
+   "owner": "SPEAKER_02",
+   "due": "2026-01-20",
+   "priority": "low",
+   "t": 1866
+  }
+ ],
+ "chapters": [
+  {
+   "title": "Quarter goals review",
+   "start": 60,
+   "end": 620,
+   "speakers": [
+    "SPEAKER_00",
+    "SPEAKER_01"
+   ],
+   "points": [
+    "Recap of last quarter's shipped work vs. plan.",
+    "Reporting feature identified as highest-leverage remaining item."
+   ]
+  },
+  {
+   "title": "The mobile question",
+   "start": 620,
+   "end": 1180,
+   "speakers": [
+    "SPEAKER_00",
+    "SPEAKER_01",
+    "SPEAKER_02"
+   ],
+   "points": [
+    "Rewrite cost estimated at two full sprints.",
+    "Usage data argued both ways; deferral won on evidence."
+   ]
+  },
+  {
+   "title": "Rollout mechanics",
+   "start": 1180,
+   "end": 1900,
+   "speakers": [
+    "SPEAKER_00",
+    "SPEAKER_02"
+   ],
+   "points": [
+    "Feature flag vs. staged rollout compared.",
+    "Pilot group sized at 5 accounts."
+   ]
+  },
+  {
+   "title": "Wrap-up and owners",
+   "start": 1900,
+   "end": 2340,
+   "speakers": [
+    "SPEAKER_00"
+   ],
+   "points": [
+    "Action items read back and assigned."
+   ]
+  }
+ ],
+ "open_questions": [
+  {
+   "text": "Does the pilot group need its own support channel?",
+   "t": 1265
+  },
+  {
+   "text": "Who signs off on the flag ramp beyond the pilot?",
+   "t": 1610
+  }
+ ],
+ "quotes": [
+  {
+   "text": "We keep planning as if mobile usage is the future; the data says otherwise today.",
+   "speaker": "SPEAKER_01",
+   "t": 880
+  },
+  {
+   "text": "A flag is cheaper than a rollback every single time.",
+   "speaker": "SPEAKER_00",
+   "t": 1240
+  }
+ ],
+ "follow_ups": [
+  "Mid-quarter checkpoint review in February.",
+  "Revisit mobile rewrite with fresh usage numbers at next sync."
+ ],
+ "transcript": [
+  {
+   "start": 60,
+   "speaker": "SPEAKER_00",
+   "text": "Alright, first item — let's walk the quarter goals and see what actually landed."
+  },
+  {
+   "start": 95,
+   "speaker": "SPEAKER_01",
+   "text": "Two of the four shipped on time. The reporting piece is the one I'd fight for next."
+  },
+  {
+   "start": 140,
+   "speaker": "SPEAKER_02",
+   "text": "Agreed, and it's the one customers ask about most in the feedback log."
+  },
+  {
+   "start": 630,
+   "speaker": "SPEAKER_01",
+   "text": "The mobile rewrite comes in at about two sprints if we do it properly."
+  },
+  {
+   "start": 668,
+   "speaker": "SPEAKER_00",
+   "text": "Two sprints is a lot. What does the usage split actually look like?"
+  },
+  {
+   "start": 700,
+   "speaker": "SPEAKER_01",
+   "text": "Twelve percent mobile last quarter, trending down."
+  },
+  {
+   "start": 880,
+   "speaker": "SPEAKER_01",
+   "text": "We keep planning as if mobile usage is the future; the data says otherwise today."
+  },
+  {
+   "start": 1190,
+   "speaker": "SPEAKER_02",
+   "text": "If we ship reporting behind a flag, the pilot is basically free to run."
+  },
+  {
+   "start": 1240,
+   "speaker": "SPEAKER_00",
+   "text": "A flag is cheaper than a rollback every single time."
+  },
+  {
+   "start": 1500,
+   "speaker": "SPEAKER_02",
+   "text": "Can we put a checkpoint on the calendar? Last quarter we found problems too late."
+  },
+  {
+   "start": 1800,
+   "speaker": "SPEAKER_00",
+   "text": "Okay — rollout checklist is mine, usage pull goes to you, and please book February."
+  }
+ ]
+}
+</script>
+
+<script>
+(function(){
+  /* ---- theme ---------------------------------------------------------- */
+  var root=document.documentElement,btn=document.getElementById('themeBtn'),
+      ic=document.getElementById('themeIcon'),tx=document.getElementById('themeTxt');
+  function setTheme(t){root.setAttribute('data-theme',t);var d=t==='dark';
+    btn.setAttribute('aria-pressed',d?'true':'false');ic.innerHTML=d?'&#9788;':'&#9790;';tx.textContent=d?'Light':'Dark';}
+  try{if(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)setTheme('dark');}catch(e){}
+  btn.addEventListener('click',function(){setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark');});
+
+  /* ---- data ----------------------------------------------------------- */
+  var D=JSON.parse(document.getElementById('report-data').textContent);
+  var M=D.meta,S=D.speakers||{},SUM=D.summary||{};
+  var spkOrder=Object.keys(S);
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function pad(n){return (n<10?'0':'')+n;}
+  function fmtT(sec){sec=Math.max(0,Math.round(sec||0));var h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;
+    return h?h+':'+pad(m)+':'+pad(s):m+':'+pad(s);}
+  function fmtDur(sec){var m=Math.round(sec/60);return m>=60?Math.floor(m/60)+' h '+pad(m%60)+' min':m+' min';}
+  function spkColor(id){var i=spkOrder.indexOf(id);return 'var(--s'+(i<0?0:i%6)+')';}
+  function spkName(id){var s=S[id];return s&&s.name?s.name:id;}
+  function spk(id){if(!id||id==='unassigned')return '<span class="badge badge-dim">unassigned</span>';
+    return '<span class="spk" style="color:'+spkColor(id)+'">'+esc(spkName(id))+'</span>';}
+  function ts(t){return t==null?'':'<a class="ts" href="#t-'+Math.round(t)+'" data-t="'+Math.round(t)+'">'+fmtT(t)+'</a>';}
+  function fmtDate(iso){try{var d=new Date(iso);return d.toLocaleDateString(undefined,{weekday:'short',year:'numeric',month:'short',day:'numeric'})+' · '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'});}catch(e){return iso;}}
+
+  /* ---- header --------------------------------------------------------- */
+  document.title=(M.title||'Recording')+' — Meeting Report';
+  document.getElementById('h-title').firstChild.textContent=M.title||'Recording';
+  var typeLabel={meeting:'Meeting',personal_memo:'Personal memo',lecture_or_talk:'Lecture / talk',interview:'Interview',other:'Recording'}[M.recording_type]||'Recording';
+  document.getElementById('h-sub').textContent=typeLabel+' · '+fmtDate(M.start_at);
+  document.getElementById('h-lede').textContent=SUM.tldr||'';
+  var idb=[['Date',new Date(M.start_at).toISOString().slice(0,10)],['Duration',fmtDur(M.duration_sec)],['Source',M.source],
+    ['Speakers',spkOrder.length],['Plaud ID',M.plaud_id],['Model',M.pipeline&&M.pipeline.summarizer]];
+  document.getElementById('idbar').innerHTML=idb.filter(function(x){return x[1]!=null&&x[1]!=='';}).map(function(x){return '<div><dt>'+esc(x[0])+'</dt><dd>'+esc(x[1])+'</dd></div>';}).join('');
+  document.getElementById('tags').innerHTML=(SUM.tags||[]).map(function(t){return '<span class="tag">'+esc(t)+'</span>';}).join('');
+
+  /* ---- sections ------------------------------------------------------- */
+  var isMemo=M.recording_type==='personal_memo',isTalk=M.recording_type==='lecture_or_talk';
+  var out=[],n=0;
+  function section(title,meta,body,open,show){if(show===false||!body)return;n++;
+    out.push('<details class="major"'+(open?' open':'')+'><summary><span class="sec-n">'+pad(n)+'</span><h2 class="sec-t">'+esc(title)+'</h2>'+
+      '<span class="sec-meta">'+esc(meta||'')+'</span><span class="caret">▶</span></summary><div class="sec-body">'+body+'</div></details>');}
+
+  // 01 summary
+  var tk=SUM.key_takeaways||[];
+  section('Summary',tk.length+' takeaways',
+    '<p class="lede">'+esc(SUM.tldr)+'</p>'+(tk.length?'<h3>Key takeaways</h3><ul class="bl">'+tk.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':''),true);
+
+  // 02 decisions
+  var dec=D.decisions||[];
+  section('Decisions',dec.length+' recorded',dec.length?dec.map(function(d,i){return '<div class="dec"><div class="dec-n">'+(i+1)+'</div><div>'+
+    '<p class="dec-t">'+esc(d.text)+ts(d.t)+'</p>'+(d.rationale?'<p class="dec-r">'+esc(d.rationale)+'</p>':'')+
+    '<div class="dec-m">'+(d.by?'<span>Proposed by '+spk(d.by)+'</span>':'')+((d.agreed||[]).length?'<span>Agreed: '+d.agreed.map(spk).join(' '):'')+'</span></div></div></div>';}).join('')
+    :'<p class="empty">No decisions were recorded.</p>',true,!isMemo&&!isTalk);
+
+  // 03 action items
+  var ai=D.action_items||[];var pri={high:'badge-hi',mid:'badge-mid',low:'badge-ok'};
+  section('Action items',ai.length+' open',ai.length?'<table class="tbl"><thead><tr><th>Task</th><th>Owner</th><th>Due</th><th>Priority</th><th>Ref</th></tr></thead><tbody>'+
+    ai.map(function(a){return '<tr><td>'+esc(a.task)+'</td><td>'+spk(a.owner)+'</td><td class="mono">'+(a.due?esc(a.due):'—')+'</td>'+
+    '<td><span class="badge '+(pri[a.priority]||'badge-dim')+'">'+esc((a.priority||'—').toUpperCase())+'</span></td><td>'+ts(a.t)+'</td></tr>';}).join('')+'</tbody></table>'
+    :'<p class="empty">No action items.</p>',true);
+
+  // 04 discussion by topic
+  var ch=D.chapters||[];
+  section('Discussion by topic',ch.length+' topics',ch.length?ch.map(function(c){return '<div class="ch"><div class="ch-h"><h4 class="ch-t">'+esc(c.title)+'</h4>'+
+    '<span class="ch-range">'+fmtT(c.start)+' – '+fmtT(c.end)+'</span>'+ts(c.start)+'</div>'+
+    ((c.speakers||[]).length?'<div class="ch-who">'+c.speakers.map(spk).join('')+'</div>':'')+
+    '<ul class="bl">'+(c.points||[]).map(function(p){return '<li>'+esc(p)+'</li>';}).join('')+'</ul>'+
+    (c.outcome?'<div class="ch-out"><b>Outcome</b>'+esc(c.outcome)+'</div>':'')+'</div>';}).join(''):'',true);
+
+  // 05 open questions
+  var oq=D.open_questions||[];
+  section('Open questions & risks',oq.length+' unresolved',oq.length?oq.map(function(q){return '<div class="oq">'+esc(q.text)+ts(q.t)+'</div>';}).join(''):'',false,oq.length>0);
+
+  // 06 quotes
+  var qs=D.quotes||[];
+  section('Notable quotes',qs.length+' verbatim',qs.length?qs.map(function(q){return '<div class="qt"><p class="qt-x">“'+esc(q.text)+'”</p><div class="qt-m">'+spk(q.speaker)+ts(q.t)+'</div></div>';}).join(''):'',false,qs.length>0);
+
+  // 07 follow-ups
+  var fu=D.follow_ups||[];
+  section('Follow-ups',fu.length+' items',fu.length?'<ul class="bl">'+fu.map(function(x){return '<li>'+esc(x)+'</li>';}).join('')+'</ul>':'',false,fu.length>0);
+
+  // 08 transcript (collapsed, copyable)
+  var tr=D.transcript||[];
+  var plain=tr.map(function(t){return '['+fmtT(t.start)+'] '+spkName(t.speaker)+': '+t.text;}).join('\n');
+  var words=plain.split(/\s+/).length;
+  section('Transcript',tr.length+' turns · '+words.toLocaleString()+' words',
+    '<p class="small" style="margin:0 0 12px">Generated locally by '+esc(M.pipeline&&M.pipeline.asr||'WhisperX')+' with '+esc(M.pipeline&&M.pipeline.diarization||'pyannote')+' speaker diarization. Speaker labels are anonymous; names shown as "(inferred)" were guessed from context. Timestamps elsewhere in this report link into this panel.</p>'+
+    '<details class="payload" id="tr-panel"><summary><span class="pay-caret">▶</span><span class="pay-t">Raw transcript</span><span class="pay-meta">'+esc(fmtDur(M.duration_sec))+' · '+spkOrder.length+' speakers</span></summary>'+
+    '<div class="pay-body"><div class="code"><div class="code-head"><span class="code-label">TRANSCRIPT · SPEAKER-TURN FORMAT</span><button class="copy" type="button" id="copyTr">Copy</button></div>'+
+    '<div class="tr-body">'+tr.map(function(t){return '<div class="turn" id="t-'+Math.round(t.start)+'"><span class="turn-t">'+fmtT(t.start)+'</span>'+spk(t.speaker)+'<p class="turn-x">'+esc(t.text)+'</p></div>';}).join('')+'</div>'+
+    '<pre id="tr-plain"><code>'+esc(plain)+'</code></pre></div>'+
+    '<p class="small" style="margin:12px 0 0">Audio: <span class="mono">'+esc(M.audio_path||'')+'</span></p></div></details>',false);
+
+  document.getElementById('sections').innerHTML=out.join('');
+
+  /* ---- timestamp links: open transcript, scroll to nearest turn ------ */
+  var starts=tr.map(function(t){return Math.round(t.start);});
+  document.body.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a.ts');if(!a)return;e.preventDefault();
+    var t=+a.dataset.t,best=null;for(var i=0;i<starts.length;i++){if(starts[i]<=t)best=starts[i];else break;}
+    if(best==null&&starts.length)best=starts[0];
+    var sec=document.getElementById('tr-panel');if(!sec)return;
+    sec.closest('details.major').open=true;sec.open=true;
+    var el=document.getElementById('t-'+best);if(!el)return;
+    [].forEach.call(document.querySelectorAll('.turn.hl'),function(x){x.classList.remove('hl');});
+    el.classList.add('hl');el.scrollIntoView({block:'center'});});
+
+  /* ---- copy ------------------------------------------------------------ */
+  document.body.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('#copyTr');if(!b)return;
+    var txt=document.getElementById('tr-plain').textContent;
+    function done(){b.textContent='Copied';b.classList.add('copied');setTimeout(function(){b.textContent='Copy';b.classList.remove('copied');},1600);}
+    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,function(){fallback();});}else fallback();
+    function fallback(){var ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');done();}catch(err){}document.body.removeChild(ta);}});
+})();
+</script>
+</body>
+</html>
