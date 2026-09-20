@@ -5,3 +5,4 @@ Collection of Claude skills I use
 2. adversecode.md: skill to perform adversarial code review
 3. changelog-versioning.skill: quickly detail changes made through code revisions
 4. hindsightSKILL.md: implementation guidelines for Claude's use of hindsight (vectorize) memory management
+5. homelab-architecture-diagram-2.skill: visualizes your homelab architecture and services. Paste your hardware and services inventory and ask for a diagram. The skill asks for anything missing, then builds the HTML. Can also generate a homelab_state.md so Claude has context on your hardware and services.
